@@ -1,19 +1,18 @@
 // ===============================
-// SUPABASE CONFIG
+// SUPABASE CLIENT
 // ===============================
-const SUPABASE_URL = window.SUPABASE_URL;
-const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
+const { createClient } = supabase;
 
-const supabase = supabasejs.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+const supabaseClient = createClient(
+  window.SUPABASE_URL,
+  window.SUPABASE_ANON_KEY
 );
 
 // ===============================
 // ATUALIZAR VALOR DAS ESCALAS
 // ===============================
-document.querySelectorAll('input[type="range"]').forEach((range) => {
-  const valueSpan = range.nextElementSibling;
+document.querySelectorAll('.scale input[type="range"]').forEach((range) => {
+  const valueSpan = range.parentElement.querySelector('.value');
   valueSpan.textContent = range.value;
 
   range.addEventListener('input', () => {
@@ -29,9 +28,7 @@ const statusMsg = document.getElementById('statusMsg');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  statusMsg.textContent = "Enviando...";
-  statusMsg.style.color = "#555";
+  statusMsg.textContent = 'Enviando...';
 
   const formData = new FormData(form);
 
@@ -40,17 +37,23 @@ form.addEventListener('submit', async (e) => {
     idade: formData.get('idade'),
     whatsapp: formData.get('whatsapp'),
     motivo: formData.get('motivo'),
-    intensidade: formData.get('intensidade'),
-    ansiedade: formData.get('ansiedade'),
-    somatico: formData.get('somatico'),
-    inicio: formData.get('inicio'),
-    piora: formData.get('piora'),
-    ajuda: formData.get('ajuda'),
-    chamada: formData.get('chamada'),
+
+    escalas: {
+      intensidade: formData.get('intensidade'),
+      ansiedade: formData.get('ansiedade'),
+      somatico: formData.get('somatico')
+    },
+
+    historico: {
+      inicio: formData.get('inicio'),
+      piora: formData.get('piora'),
+      ajuda: formData.get('ajuda'),
+      chamada: formData.get('chamada')
+    }
   };
 
   try {
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('intake_submissions')
       .insert([
         {
@@ -60,16 +63,21 @@ form.addEventListener('submit', async (e) => {
       ]);
 
     if (error) {
-      throw error;
+      console.error(error);
+      statusMsg.textContent = 'Erro ao enviar. Verifique e tente novamente.';
+      statusMsg.style.color = 'red';
+      return;
     }
 
-    statusMsg.textContent = "✔️ Enviado com sucesso. Obrigada.";
-    statusMsg.style.color = "green";
+    statusMsg.textContent = '✔ Enviado com sucesso. Obrigada.';
+    statusMsg.style.color = 'green';
     form.reset();
+
+    document.querySelectorAll('.scale .value').forEach(v => v.textContent = '5');
 
   } catch (err) {
     console.error(err);
-    statusMsg.textContent = "❌ Erro ao enviar. Tente novamente.";
-    statusMsg.style.color = "red";
+    statusMsg.textContent = 'Erro inesperado ao enviar.';
+    statusMsg.style.color = 'red';
   }
 });
