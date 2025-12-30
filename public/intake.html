@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anamnese TRG</title>
+  <link rel="stylesheet" href="/public/intake.css" />
+</head>
+<body>
+
+<main class="wrap">
+  <header class="top">
+    <h1>Anamnese TRG</h1>
+    <p class="sub">Responda com calma. É rápido e objetivo.</p>
+    <div id="status" class="status">Carregando…</div>
+  </header>
+
+  <form id="form" class="card">
+    <section class="grid">
+      <label class="field">
+        <span>Nome</span>
+        <input name="nome" required placeholder="Seu nome" />
+      </label>
+
+      <label class="field">
+        <span>Idade</span>
+        <input name="idade" type="number" required />
+      </label>
+
+      <label class="field">
+        <span>WhatsApp</span>
+        <input name="whats" required placeholder="(DDD) 9xxxx-xxxx" />
+      </label>
+
+      <label class="field">
+        <span>Motivo principal</span>
+        <input name="motivo" required placeholder="Ex: ansiedade, medo, relacionamento" />
+      </label>
+    </section>
+
+    <section class="card inner">
+      <h2>Escalas (0 a 10)</h2>
+
+      <label class="field">
+        <span>Intensidade do problema</span>
+        <input type="range" name="intensidade" min="0" max="10" value="7" />
+        <div class="rangeValue"><b id="v_intensidade">7</b>/10</div>
+      </label>
+
+      <label class="field">
+        <span>Ansiedade</span>
+        <input type="range" name="ansiedade" min="0" max="10" value="5" />
+        <div class="rangeValue"><b id="v_ansiedade">5</b>/10</div>
+      </label>
+
+      <label class="field">
+        <span>Somático (corpo)</span>
+        <input type="range" name="somatico" min="0" max="10" value="3" />
+        <div class="rangeValue"><b id="v_somatico">3</b>/10</div>
+      </label>
+    </section>
+
+    <section class="card inner">
+      <h2>Histórico rápido</h2>
+
+      <label class="field">
+        <span>Quando começou?</span>
+        <select name="inicio" required>
+          <option value="">Selecione</option>
+          <option>Há poucos dias</option>
+          <option>Há semanas</option>
+          <option>Há meses</option>
+          <option>Há anos</option>
+          <option>Desde a infância</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>O que piora?</span>
+        <input name="piora" />
+      </label>
+
+      <label class="field">
+        <span>O que ajuda?</span>
+        <input name="ajuda" />
+      </label>
+
+      <label class="field">
+        <span>Aceita atendimento por chamada?</span>
+        <select name="aceita_chamada" required>
+          <option value="">Selecione</option>
+          <option>Sim</option>
+          <option>Não</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="actions">
+      <button id="btnSubmit" type="submit">FINALIZAR E ENVIAR</button>
+      <p class="note">Suas respostas serão enviadas com segurança.</p>
+    </section>
+  </form>
+
+  <footer class="foot">
+    <small>TRG • Anamnese Online</small>
+  </footer>
+</main>
+
+<script src="/public/intake.js"></script>
+</body>
+</html>
