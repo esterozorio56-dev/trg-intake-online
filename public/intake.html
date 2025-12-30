@@ -25,7 +25,7 @@
         <div class="row">
           <div class="group">
             <label>Idade</label>
-            <input type="number" name="idade" min="1" />
+            <input type="number" name="idade" />
           </div>
 
           <div class="group">
@@ -100,16 +100,17 @@
     </div>
   </div>
 
-  <!-- SUPABASE SDK -->
+  <!-- SUPABASE CDN (OBRIGATÓRIO) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- CHAVES -->
   <script>
-  window.SUPABASE_URL = "https://intjqydhaipbdrjmidpu.supabase.co";
-  window.SUPABASE_ANON_KEY = "sb_publishable_QOfUX4PoitYEOP15pUf8Lw_nSHpZls9";
-</script>
+    window.SUPABASE_URL = "https://intjqydhaipbdrjmidpu.supabase.co";
+    window.SUPABASE_ANON_KEY = "sb_publishable_QOfUX4PoitYEOP15pUf8Lw_nSHpZls9";
+  </script>
 
-
+  <!-- SEU SCRIPT -->
   <script src="/intake.js"></script>
+
 </body>
 </html>
