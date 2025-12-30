@@ -1,43 +1,75 @@
-const form = document.getElementById("intakeForm");
-const statusMsg = document.getElementById("statusMsg");
+// ===============================
+// SUPABASE CONFIG
+// ===============================
+const SUPABASE_URL = window.SUPABASE_URL;
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
 
-const supabaseUrl = window.SUPABASE_URL;
-const supabaseKey = window.SUPABASE_ANON_KEY;
+const supabase = supabasejs.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-async function enviarFormulario(dados) {
-  const response = await fetch(`${supabaseUrl}/rest/v1/intake_submissions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": supabaseKey,
-      "Authorization": `Bearer ${supabaseKey}`,
-      "Prefer": "return=minimal"
-    },
-    body: JSON.stringify({
-      status: "novo",
-      answers: dados,
-      submitted_at: new Date().toISOString()
-    })
+// ===============================
+// ATUALIZAR VALOR DAS ESCALAS
+// ===============================
+document.querySelectorAll('input[type="range"]').forEach((range) => {
+  const valueSpan = range.nextElementSibling;
+  valueSpan.textContent = range.value;
+
+  range.addEventListener('input', () => {
+    valueSpan.textContent = range.value;
   });
+});
 
-  if (!response.ok) {
-    throw new Error("Falha ao enviar");
-  }
-}
+// ===============================
+// ENVIO DO FORMULÁRIO
+// ===============================
+const form = document.getElementById('intakeForm');
+const statusMsg = document.getElementById('statusMsg');
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  statusMsg.textContent = "Enviando com calma...";
+
+  statusMsg.textContent = "Enviando...";
+  statusMsg.style.color = "#555";
 
   const formData = new FormData(form);
-  const dados = Object.fromEntries(formData.entries());
+
+  const payload = {
+    nome: formData.get('nome'),
+    idade: formData.get('idade'),
+    whatsapp: formData.get('whatsapp'),
+    motivo: formData.get('motivo'),
+    intensidade: formData.get('intensidade'),
+    ansiedade: formData.get('ansiedade'),
+    somatico: formData.get('somatico'),
+    inicio: formData.get('inicio'),
+    piora: formData.get('piora'),
+    ajuda: formData.get('ajuda'),
+    chamada: formData.get('chamada'),
+  };
 
   try {
-    await enviarFormulario(dados);
+    const { error } = await supabase
+      .from('intake_submissions')
+      .insert([
+        {
+          status: 'novo',
+          answers: payload
+        }
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
     statusMsg.textContent = "✔️ Enviado com sucesso. Obrigada.";
+    statusMsg.style.color = "green";
     form.reset();
+
   } catch (err) {
     console.error(err);
     statusMsg.textContent = "❌ Erro ao enviar. Tente novamente.";
+    statusMsg.style.color = "red";
   }
 });
