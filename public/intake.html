@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Anamnese TRG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 
@@ -36,7 +36,7 @@
 
         <div class="group">
           <label>Motivo principal</label>
-          <input type="text" name="motivo" placeholder="Ex: ansiedade, medo, relacionamento" />
+          <input type="text" name="motivo" />
         </div>
 
         <h2>Escalas (0 a 10)</h2>
@@ -44,19 +44,19 @@
         <div class="scale">
           <label>Intensidade do problema</label>
           <input type="range" name="intensidade" min="0" max="10" value="5" />
-          <span class="value">5</span>
+          <span>5</span>
         </div>
 
         <div class="scale">
           <label>Ansiedade</label>
           <input type="range" name="ansiedade" min="0" max="10" value="5" />
-          <span class="value">5</span>
+          <span>5</span>
         </div>
 
         <div class="scale">
           <label>Somático (corpo)</label>
           <input type="range" name="somatico" min="0" max="10" value="5" />
-          <span class="value">5</span>
+          <span>5</span>
         </div>
 
         <h2>Histórico rápido</h2>
@@ -94,25 +94,21 @@
         <button type="submit">Finalizar com calma</button>
 
         <p id="statusMsg"></p>
-
       </form>
 
-      <footer>
-        TRG • Anamnese Online
-      </footer>
+      <footer>TRG • Anamnese Online</footer>
     </div>
   </div>
 
-  <!-- SUPABASE SDK (OBRIGATÓRIO) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SUPABASE SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- SUAS CHAVES -->
-<script>
-  window.SUPABASE_URL = "https://INTJQYDAHIPBDRJMIDPU.supabase.co";
-  window.SUPABASE_ANON_KEY = "sb_publishable_QOfUX4PoitYEOP15pUf8Lw_nSHpZls9";
-</script>
+  <!-- CHAVES -->
+  <script>
+    window.SUPABASE_URL = "https://INTJQYDAHIPBDRJMIDPU.supabase.co";
+    window.SUPABASE_ANON_KEY = "sb_publishable_QOfUX4PoitYEOP15pUf8Lw_nSHpZls9";
+  </script>
 
-<!-- SEU SCRIPT -->
-  <script src="intake.js"></script>
+  <script src="/intake.js"></script>
 </body>
 </html>
