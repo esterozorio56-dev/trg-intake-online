@@ -1,5 +1,5 @@
 // ===============================
-// SUPABASE CLIENT
+// SUPABASE CLIENT (APENAS UMA VEZ)
 // ===============================
 const supabase = window.supabase.createClient(
   window.SUPABASE_URL,
@@ -14,6 +14,7 @@ const statusMsg = document.getElementById("statusMsg");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   statusMsg.textContent = "Enviando...";
   statusMsg.style.color = "#333";
 
@@ -35,12 +36,7 @@ form.addEventListener("submit", async (e) => {
 
   const { error } = await supabase
     .from("intake_submissions")
-    .insert([
-      {
-        status: "new",
-        answers: answers
-      }
-    ]);
+    .insert([{ status: "new", answers }]);
 
   if (error) {
     console.error("Erro Supabase:", error);
