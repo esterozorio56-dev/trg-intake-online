@@ -1,5 +1,5 @@
 // ===============================
-// SUPABASE CLIENT (APENAS UMA VEZ)
+// SUPABASE CLIENT (ÚNICO)
 // ===============================
 const supabase = window.supabase.createClient(
   window.SUPABASE_URL,
@@ -9,43 +9,53 @@ const supabase = window.supabase.createClient(
 // ===============================
 // FORM SUBMIT
 // ===============================
-const form = document.getElementById("intakeForm");
-const statusMsg = document.getElementById("statusMsg");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("intakeForm");
+  const statusMsg = document.getElementById("statusMsg");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // Atualiza valores das escalas
+  document.querySelectorAll('input[type="range"]').forEach(range => {
+    const valueSpan = range.parentElement.querySelector(".value");
+    if (valueSpan) valueSpan.textContent = range.value;
 
-  statusMsg.textContent = "Enviando...";
-  statusMsg.style.color = "#333";
+    range.addEventListener("input", () => {
+      if (valueSpan) valueSpan.textContent = range.value;
+    });
+  });
 
-  const formData = new FormData(form);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusMsg.textContent = "Enviando...";
+    statusMsg.style.color = "#333";
 
-  const answers = {
-    nome: formData.get("nome"),
-    idade: formData.get("idade"),
-    whatsapp: formData.get("whatsapp"),
-    motivo: formData.get("motivo"),
-    intensidade: formData.get("intensidade"),
-    ansiedade: formData.get("ansiedade"),
-    somatico: formData.get("somatico"),
-    inicio: formData.get("inicio"),
-    piora: formData.get("piora"),
-    ajuda: formData.get("ajuda"),
-    chamada: formData.get("chamada")
-  };
+    const data = {
+      nome: form.nome.value,
+      idade: form.idade.value,
+      whatsapp: form.whatsapp.value,
+      motivo: form.motivo.value,
+      intensidade: form.intensidade.value,
+      ansiedade: form.ansiedade.value,
+      somatico: form.somatico.value,
+      inicio: form.inicio.value,
+      piora: form.piora.value,
+      ajuda: form.ajuda.value,
+      chamada: form.chamada.value,
+      created_at: new Date()
+    };
 
-  const { error } = await supabase
-    .from("intake_submissions")
-    .insert([{ status: "new", answers }]);
+    const { error } = await supabase
+      .from("intake_submissions")
+      .insert([{ answers: data, status: "novo" }]);
 
-  if (error) {
-    console.error("Erro Supabase:", error);
-    statusMsg.textContent = "Erro ao enviar. Verifique e tente novamente.";
-    statusMsg.style.color = "red";
-    return;
-  }
+    if (error) {
+      console.error("Erro Supabase:", error);
+      statusMsg.textContent = "Erro ao enviar. Verifique e tente novamente.";
+      statusMsg.style.color = "red";
+      return;
+    }
 
-  statusMsg.textContent = "Formulário enviado com sucesso!";
-  statusMsg.style.color = "green";
-  form.reset();
+    statusMsg.textContent = "Formulário enviado com sucesso.";
+    statusMsg.style.color = "green";
+    form.reset();
+  });
 });
