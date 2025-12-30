@@ -1,44 +1,43 @@
 const form = document.getElementById("intakeForm");
 const statusMsg = document.getElementById("statusMsg");
 
-const SUPABASE_URL = window.SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
+const supabaseUrl = window.SUPABASE_URL;
+const supabaseKey = window.SUPABASE_ANON_KEY;
 
-form.querySelectorAll("input[type=range]").forEach(slider => {
-  const valueSpan = slider.nextElementSibling;
-  slider.addEventListener("input", () => {
-    valueSpan.textContent = slider.value;
+async function enviarFormulario(dados) {
+  const response = await fetch(`${supabaseUrl}/rest/v1/intake_submissions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": supabaseKey,
+      "Authorization": `Bearer ${supabaseKey}`,
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify({
+      status: "novo",
+      answers: dados,
+      submitted_at: new Date().toISOString()
+    })
   });
-});
+
+  if (!response.ok) {
+    throw new Error("Falha ao enviar");
+  }
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  statusMsg.textContent = "Enviando...";
+  statusMsg.textContent = "Enviando com calma...";
 
-  const data = Object.fromEntries(new FormData(form));
+  const formData = new FormData(form);
+  const dados = Object.fromEntries(formData.entries());
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/intake_submissions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify({
-        status: "novo",
-        answers: data
-      })
-    });
-
-    if (!res.ok) throw new Error("Erro ao enviar");
-
-    statusMsg.textContent = "✔ Enviado com sucesso. Obrigada.";
-    statusMsg.style.color = "green";
+    await enviarFormulario(dados);
+    statusMsg.textContent = "✔️ Enviado com sucesso. Obrigada.";
     form.reset();
-
   } catch (err) {
-    statusMsg.textContent = "Erro ao enviar. Tente novamente.";
-    statusMsg.style.color = "red";
+    console.error(err);
+    statusMsg.textContent = "❌ Erro ao enviar. Tente novamente.";
   }
 });
