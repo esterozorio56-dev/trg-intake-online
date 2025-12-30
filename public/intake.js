@@ -1,35 +1,44 @@
-// cria o cliente com OUTRO nome (não supabase)
-const db = window.supabase.createClient(
+// ===============================
+// SUPABASE CLIENT
+// ===============================
+const supabase = window.supabase.createClient(
   window.SUPABASE_URL,
   window.SUPABASE_ANON_KEY
 );
 
+// ===============================
+// FORM SUBMIT
+// ===============================
 const form = document.getElementById("intakeForm");
 const statusMsg = document.getElementById("statusMsg");
 
-// atualizar valor das escalas visualmente
-document.querySelectorAll('input[type="range"]').forEach((range) => {
-  const span = range.nextElementSibling;
-  span.textContent = range.value;
-  range.addEventListener("input", () => {
-    span.textContent = range.value;
-  });
-});
-
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   statusMsg.textContent = "Enviando...";
   statusMsg.style.color = "#333";
 
-  const formData = Object.fromEntries(new FormData(form).entries());
+  const formData = new FormData(form);
 
-  const { error } = await db
+  const answers = {
+    nome: formData.get("nome"),
+    idade: formData.get("idade"),
+    whatsapp: formData.get("whatsapp"),
+    motivo: formData.get("motivo"),
+    intensidade: formData.get("intensidade"),
+    ansiedade: formData.get("ansiedade"),
+    somatico: formData.get("somatico"),
+    inicio: formData.get("inicio"),
+    piora: formData.get("piora"),
+    ajuda: formData.get("ajuda"),
+    chamada: formData.get("chamada")
+  };
+
+  const { error } = await supabase
     .from("intake_submissions")
     .insert([
       {
-        status: "novo",
-        answers: formData
+        status: "new",
+        answers: answers
       }
     ]);
 
@@ -37,9 +46,10 @@ form.addEventListener("submit", async (e) => {
     console.error("Erro Supabase:", error);
     statusMsg.textContent = "Erro ao enviar. Verifique e tente novamente.";
     statusMsg.style.color = "red";
-  } else {
-    statusMsg.textContent = "Formulário enviado com sucesso.";
-    statusMsg.style.color = "green";
-    form.reset();
+    return;
   }
+
+  statusMsg.textContent = "Formulário enviado com sucesso!";
+  statusMsg.style.color = "green";
+  form.reset();
 });
